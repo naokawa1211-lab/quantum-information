@@ -14,4 +14,5 @@ Python,Qiskit
 * 量子フーリエ変換/Quantum Fourier transform
 * 量子位相推定/Phase estimation
 
-
+## 進捗/Progress
+量子テレポーテーションを実装中
