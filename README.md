@@ -8,6 +8,8 @@ Python,Qiskit
 
 ## 進捗/Progress
 - [x] [量子テレポーテーション / Quantum teleportation](./notebooks/01_quantum%20teleportation.ipynb)
+- [ ] [量子高密度符号化 / Superdense coding]
+(./notebooks/02_superdense%20coding.ipynb)
 - [ ] 変分量子固有値ソルバー (VQE) / Variational Quantum Eigensolver
 - [ ] グローバーの探索アルゴリズム / Grover's Algorithm
 - [ ] ショアのアルゴリズム / Shor's Algorithm
