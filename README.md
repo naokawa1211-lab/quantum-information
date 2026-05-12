@@ -7,7 +7,7 @@ This project implements quantum algorithms using Qiskit, a Python library for qu
 Python,Qiskit
 
 ## 進捗/Progress
-- [x] 量子テレポーテーション / Quantum teleportation　[(実装)](./notebooks/01_quantum%20teleportation.ipynb)
+- [x] 量子テレポーテーション / Quantum teleportation　[[実装]](./notebooks/01_quantum%20teleportation.ipynb)
 - [x] 量子高密度符号化 / Superdense coding　[(実装)](./notebooks/02_superdense_coding.ipynb)
 - [x] ドイチュのアルゴリズム / Deutsch's Algorithm　[(実装)](./notebooks/03_deutsch's_algorithm.ipynb)
 - [x] ドイチュ・ジョサのアルゴリズム / Deuthsch & Jozsa Algorithm　[(実装)](./notebooks/04_Deutsch-Jozsa_algorithm.ipynb)
