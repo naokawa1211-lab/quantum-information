@@ -1,0 +1,72 @@
+\documentclass[dvipdfmx]{jsarticle}
+\usepackage[dvipdfmx]{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage[margin=15truemm]{geometry}
+\usepackage{titlesec}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{tikz}
+\usepackage{ascmac} 
+\usepackage{enumitem}
+\usepackage{thmbox}
+\usepackage{pgfplots}
+\usepackage{physics}
+\usepackage{float}
+
+\title{\vspace{-2cm}量子フーリエ変換}
+\author{河田直也}
+\date{\today}
+\raggedbottom
+\titlespacing*{\section}{0pt}{*0}{*0}
+\begin{document}
+\maketitle
+\section{量子フーリエ変換とは}
+離散フーリエ変換は以下のように定義される。通常の文脈では指数部分の符号はマイナスであるが、量子フーリエ変換との接続を考えて符号をプラスにしている。通常の逆フーリエ変換ととらえることができる。
+\begin{equation}
+    y_k := \frac{1}{\sqrt{N}} \sum_{j=0}^{N-1} x_j e^{2\pi ijk/N}\label{eq:dft}
+\end{equation}
+$x_0,\cdots, x_{N-1}$の入力に対して、$y_0,\cdots, y_{N-1}$の出力をするような変換になっていることがわかる。量子フーリエ変換は離散フーリエ変換を量子の表現で置き換えたものである。\\
+量子フーリエ変換は$2^n$次元のHilbert空間$\mathcal{H}$上の$N$個の正規直交基底$\ket{0},\cdots, \ket{N-1}$を別の$N$個の正規直交基底$\left\{\ket{\tilde{k}}\right\}_{k=0}^{N-1}$に写すユニタリ変換である。
+\begin{equation}
+    \ket{j} \rightarrow \frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} e^{2\pi ijk/N} \ket{k}
+\end{equation}
+同様にして$N$個の基底の線形結合であらわされる任意の状態に対する変換として
+\begin{align}
+    \sum_{j=0}^{N-1} x_j \ket{j} &\rightarrow \sum_{j=0}^{N-1}x_j\left(\frac{1}{\sqrt{N}}\sum_{k=0}^{N-1} e^{2\pi ijk/N} \ket{k}\right) \notag \\
+    &= \frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} \left(\sum_{j=0}^{N-1} x_j e^{2\pi ijk/N}\right) \ket{k}\notag \\
+    &= \sum_{k=0}^{N-1} y_k \ket{k}\quad(\because \text{式\ref{eq:dft}})\label{eq:qft}
+\end{align}
+と書けることもわかる。ここで$y_k$は振幅$x_j$の離散フーリエ変換での出力である。
+\vspace{5mm}
+\section{ユニタリ性}
+量子フーリエ変換が量子アルゴリズムであるためにはユニタリである必要がある。量子フーリエ変換がユニタリであることは以下の2通りの手法で示すことができる。
+\begin{enumerate}[label = (\roman*)]
+    \item 量子フーリエ変換$\hat{F}$の行列表示$F$がユニタリ行列であることを示す
+    \item 量子フーリエ変換を行う量子回路をユニタリな量子ゲートのみを用いて構成できることを示す
+\end{enumerate}
+量子回路の構成は必然的に述べるため、ここでは(i)の方法での証明を与える。
+\begin{proof}
+    量子フーリエ変換$\hat{F}$を正規直交基底$\ket{0},\cdots,\ket{N-1}$において行列表示する。行列$F$の成分$F_jk=\bra{j}\hat{F}\ket{k}$は以下のとおりである。
+    \begin{align}
+        F_{jk} &= \bra{j}\hat{F}\ket{k}\notag\\
+        &=\bra{j}\left(\frac{1}{\sqrt{N}}\sum_{l=0}^{N-1}e^{2\pi ikl/N}\ket{l}\right)\notag\\
+        &= \frac{1}{\sqrt{N}}e^{2\pi ijk/N}\quad(\because \text{正規直交基底})
+    \end{align}
+    次に、$F^\dagger F$の成分を計算して$F^\dagger F = I$が成り立つことを示す。
+    \begin{align}
+        (F^\dagger F)_{jk} &= \sum_{l=0}^{N-1} (F^\dagger)_{jl} F_{lk} \notag \\
+        &= \sum_{l=0}^{N-1} \overline{F_{lj}} F_{lk} \quad (\because \text{$\dagger$は共役転置を意味する})\notag \\
+        &= \sum_{l=0}^{N-1} \left(\frac{1}{\sqrt{N}}e^{-2\pi ilj/N}\right) \left(\frac{1}{\sqrt{N}}e^{2\pi ilk/N}\right) \notag \\
+        &= \frac{1}{N} \sum_{l=0}^{N-1} e^{2\pi il(k-j)/N} \notag \\
+        &= \delta_{jk} \quad(\because \text{等比数列の和の公式を用いる})
+    \end{align}
+    よって$\hat{F}$がユニタリであることが示された。
+\end{proof}
+これはフーリエ変換をした後に逆フーリエ変換を行うと元に戻るという性質の表れといえる。量子フーリエ変換がユニタリであることが示されたので、ユニタリな量子ゲートを用いてアルゴリズムの実装が可能ということが分かった。
+\vspace{5mm}
+\section{積表示}
+$N=2^n$とする。$n$量子ビット量子コンピュータでの計算基底が$\ket{0},\cdots, \ket{2^n-1}$の計$2^n$個であるためである。
+\end{document}
