@@ -1,0 +1,21 @@
+## LaTeX 関連の一時ファイル
+*.aux
+*.log
+*.toc
+*.out
+*.nav
+*.snm
+*.vrb
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.pdfsync
+
+## DVI/PS 関連
+*.dvi
+*.ps
+
+## macOS 固有のファイル
+.DS_Store
