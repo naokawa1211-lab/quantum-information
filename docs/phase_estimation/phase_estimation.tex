@@ -1,0 +1,44 @@
+\documentclass[dvipdfmx]{jsarticle}
+\usepackage[dvipdfmx]{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage[margin=15truemm]{geometry}
+\usepackage{titlesec}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{tikz}
+\usepackage{ascmac} 
+\usepackage{enumitem}
+\usepackage{thmbox}
+\usepackage{pgfplots}
+\usepackage{physics}
+\usepackage{float}
+\usepackage{quantikz}
+\usepackage{adjustbox}
+\title{\vspace{-2cm}量子位相推定}
+\author{河田直也}
+\date{\today}
+\raggedbottom
+\titlespacing*{\section}{0pt}{*0}{*0}
+\begin{document}
+\maketitle
+\section{量子位相推定とは}
+ユニタリ演算子$U$の固有状態$\ket{u}$に対応する固有値は絶対値が1の複素数なので$e^{2\pi i \varphi}$と表せる。固有値$e^{2\pi i \varphi}$の値が未知の時、固有値の位相$\varphi$を推定するアルゴリズムが量子位相推定である。ここではユニタリ演算子$U$はブラックボックスであるとし、固有状態$\ket{u}$と制御$U^{2^j}$ゲートを用意できるとする。制御$U^{2^j}$ゲートは制御ビットが$\ket{1}$のときに標的ビットにユニタリゲート$U$を$2^j$回作用させるゲートである。$j$は非負整数である。\\
+ブラックボックスなユニタリ演算子$U$はオラクルとも呼ばれる。オラクルを用いたアルゴリズムということは量子位相推定が他のアルゴリズムの一部として用いられることを意味する。
+\vspace{3mm}
+\section{量子回路}
+\begin{figure}[H]
+    \centering
+\begin{quantikz}[thin lines]
+    \lstick{$\ket{0}$} & \gate{H} & & & &\cdots & \\
+    \vdots & \setwiretype{n} & & & & \vdots \\
+    \lstick{$\ket{0}$} & \gate{H} & & & \\
+    \lstick{$\ket{0}$} & \gate{H} &\\
+    \lstick{$\ket{0}$} & \gate{H} &\\
+    \setwiretype{n} & & & \\
+    \lstick{$\ket{u}$} & \qwbundle[alternate]{} & \gate{U^{2^0}}& \gate{U^{2^1}}& \gate{U^{2^2}}& \cdots & \gate{U^{2^{t-1}}}& & \\
+\end{quantikz}
+\end{figure}
+\end{document}
