@@ -12,7 +12,7 @@ Python,Qiskit
 - [x] ドイチュのアルゴリズム / Deutsch's Algorithm　[[実装]](./notebooks/03_deutsch's_algorithm.ipynb)
 - [x] ドイチュ・ジョサのアルゴリズム / Deuthsch & Jozsa Algorithm　[[実装]](./notebooks/04_Deutsch-Jozsa_algorithm.ipynb)
 - [ ] 量子フーリエ変換 / Quantum Fourier transform  [[実装]][[理論]](./docs/quantum_fourier_transform/quantum_fourier_transform.pdf)
-- [ ] 量子位相推定 / Phase estimation
+- [ ] 量子位相推定 / Phase estimation　[[実装]][[理論]](./docs/phase_estimation/phase_estimation.pdf)
 - [ ] 変分量子固有値ソルバー (VQE) / Variational Quantum Eigensolver
 - [ ] グローバーの探索アルゴリズム / Grover's Algorithm
 - [ ] ショアのアルゴリズム / Shor's Algorithm
