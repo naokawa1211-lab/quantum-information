@@ -17,6 +17,18 @@
 \usepackage{float}
 \usepackage{quantikz}
 \usepackage{adjustbox}
+\usepackage[%
+ dvipdfmx,% 欧文ではコメントアウトする
+ setpagesize=false,%
+ bookmarks=true,%
+ bookmarksdepth=tocdepth,%
+ bookmarksnumbered=true,%
+ colorlinks=true,%
+ pdftitle={},%
+ pdfsubject={},%
+ pdfauthor={},%
+ pdfkeywords={}%
+]{hyperref}
 \title{\vspace{-2cm}量子位相推定}
 \author{河田直也}
 \date{\today}
@@ -29,6 +41,10 @@
 ブラックボックスなユニタリ演算子$U$はオラクルとも呼ばれる。オラクルを用いたアルゴリズムということは量子位相推定が他のアルゴリズムの一部として用いられることを意味する。
 \vspace{3mm}
 \section{量子回路}
+量子位相推定に用いる量子回路は2つのレジスタに分けられる。第1レジスタ（上）は$\ket{0}$で初期化された$t$個の量子ビットで構成され、第2レジスタ（下）は推定対象のユニタリゲート$U$の固有状態$\ket{u}$を表現するのに必要な数の量子ビットで構成される。第1レジスタの量子ビット数$t$は位相推定において要求される精度によって決まる。$t$が大きいほど推定される位相の精度もよくなる。\\
+量子位相推定は複数段階に分けて行われる。
+\subsection{第1段階}
+第1段階の量子回路を以下の図\ref{fig:first}に示す。
 \begin{figure}[H]
     \centering
 \begin{quantikz}[thin lines]
@@ -40,7 +56,68 @@
     \setwiretype{n} & & & \\
     \lstick{$\ket{u}$} & \qwbundle[alternate]{} & \gate{U^{2^0}}& \gate{U^{2^1}}& \gate{U^{2^2}}& \cdots & \gate{U^{2^{t-1}}}& \rstick{$\ket{u}$} \\
 \end{quantikz}
-\caption{量子位相推定の量子回路（規格化定数を省略）}
+\caption{第1段階の量子回路（規格化定数を省略）}
+\label{fig:first}
 \end{figure}
-
+第1段階の量子回路を通る量子状態の推移を観察する。$\ket{0}$で初期化された第1レジスタの$t$量子ビットに対してHadamardゲートを作用させると
+\[
+    \ket{00\cdots 0} \rightarrow \frac{1}{2^{t/2}}\left(\ket{0}+\ket{1}\right)\left(\ket{0}+\ket{1}\right)\cdots \left(\ket{0}+\ket{1}\right)
+\]
+次に第2レジスタに対して順に制御$U^{2^j}$ゲートを作用させる。ここで、\textbf{位相キックバック}という現象を用いる。
+\vspace{2mm}
+\begin{itembox}[l]{位相キックバック}
+    位相キックバックとは、制御$U$ゲートを標的ビットに作用させると標的ビットの状態に応じて制御ビットの相対位相が変化することである。具体例として以下の量子回路を考える。\\
+    \begin{center}
+    \begin{quantikz}[thin lines]
+    \lstick{$\ket{0}$} & \gate{H} & \ctrl{1} & \rstick{$\frac{1}{\sqrt{2}}(\ket{0}+e^{2\pi i \varphi}\ket{1})$}\\
+    \lstick{$\ket{u}$} & \qwbundle[alternate]{} & \gate{U} & \rstick{$\ket{u}$} \\
+\end{quantikz}
+\end{center}
+2つの量子ビットを考え、1番目の量子ビットは$\ket{0}$で初期化、2番目の量子ビット（の集まり）はユニタリゲート$U$の固有状態$\ket{u}$で初期化されているとする。量子状態の推移は
+\[
+    \ket{0}\ket{u} \rightarrow \frac{1}{\sqrt{2}}(\ket{0}+\ket{1})\ket{u} \rightarrow \frac{1}{\sqrt{2}}(\ket{0}\ket{u} + \ket{1}e^{2\pi i \varphi}\ket{u})= \frac{1}{\sqrt{2}}(\ket{0}+e^{2\pi i \varphi}\ket{1})\ket{u}
+\]
+となり、制御ビット側にユニタリゲート$U$の位相の情報$e^{2\pi i \varphi}$が伝わっていることが分かる。位相キックバック後は標的ビットにユニタリゲート$U$を作用させているにもかかわらず標的ビットの状態は初期状態$\ket{u}$で変化していない。
+\end{itembox}
+位相キックバックを繰り返し用いることで第1レジスタに$U$の位相の情報を伝える。繰り返し位相キックバックを行うことができるのは第2レジスタの状態が$\ket{u}$で変化しないからである。以下では規格化定数を省略する。
+\begin{enumerate}[label = (\roman*)]
+    \item $t$番目の量子ビットを制御ビットとして制御$U^{2^0}$ゲートを作用\\
+    $t$番目の量子ビットが$\ket{0}$のときは第2レジスタの状態は$\ket{u}$のままであるが、$t$番目の量子ビットが$\ket{1}$のときは第2レジスタの状態は$U^{2^0}\ket{u}=e^{2\pi i (2^0\varphi)}\ket{u}$となる。位相キックバックにより$t$番目の量子ビットの状態は以下の通り推移する。
+    \[
+    \ket{0}+\ket{1}\rightarrow \ket{0}+e^{2\pi i (2^0\varphi)}\ket{1}
+    \]
+    \item $(t-1)$番目の量子ビットを制御ビットとして制御$U^{2^1}$ゲートを作用\\
+    $(t-1)$番目の量子ビットが$\ket{0}$のときは第2レジスタの状態は$\ket{u}$のままであるが、$(t-1)$番目の量子ビットが$\ket{1}$のときは第2レジスタの状態は$U^{2^1}\ket{u}=e^{2\pi i (2^1\varphi)}\ket{u}$となる。位相キックバックにより$(t-1)$番目の量子ビットの状態は以下の通り推移する。
+    \[
+    \ket{0}+\ket{1}\rightarrow \ket{0}+e^{2\pi i (2^1\varphi)}\ket{1}
+    \]
+    \item 同様の操作を繰り返す\\
+    $t$番目の量子ビットから始まり、$1$番目の量子ビットまで制御$U^{2^j}$ゲートを作用することを繰り返す。それぞれの操作において位相キックバックが起こり、作用した後の第1レジスタの量子状態は規格化定数を含めて以下のように表される。
+    \begin{equation}
+    \frac{1}{2^{t/2}}\left(\ket{0}+e^{2\pi i (2^{t-1}\varphi)}\ket{1}\right)\left(\ket{0}+e^{2\pi i (2^{t-2}\varphi)}\ket{1}\right)\cdots \left(\ket{0}+e^{2\pi i (2^0\varphi)}\ket{1}\right) \label{eq:first_state}
+    \end{equation}
+\end{enumerate}
+ここで、位相$\varphi$が$t$ビットで完全に表せると仮定する\footnote{この仮定は一般に満たされないことに注意する。}。すなわち、2進数表示した小数として
+\[
+    \varphi = 0.\varphi_1\varphi_2\cdots \varphi_t{}_{(2)}
+\]
+と表されるとする。このとき式\ref{eq:first_state}で表される量子状態は以下のように表せる。
+\begin{equation}
+    \frac{1}{2^{t/2}}\left(\ket{0}+e^{2\pi i (0.\varphi_t{}_{(2)})}\ket{1}\right)\left(\ket{0}+e^{2\pi i (0.\varphi_{t-1}\varphi_t{}_{(2)})}\ket{1}\right)\cdots \left(\ket{0}+e^{2\pi i (0.\varphi_1\varphi_2\cdots \varphi_t{}_{(2)})}\ket{1}\right) \label{eq:exact_state}
+\end{equation}
+この量子状態はまさしく$\varphi$を量子フーリエ変換した後の状態（積表示）と一致している。そのため、この量子状態に対して逆量子フーリエ変換（$QFT^\dagger$）を行えば$\varphi$が得られ、位相を求めることができるのである。
+\subsection{第2段階}
+第2段階では第1レジスタに対して逆量子フーリエ変換を行い、位相$\varphi$を復元する。以下の図\ref{fig:second}に第1段階と第2段階を合わせた量子回路の概略図を示す。
+\begin{figure}[H]
+\centering
+\begin{quantikz}[thin lines]
+    \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \gate{H} & \ctrl{1} & \gate{QFT^\dagger}&\meter{}\\
+    \lstick{$\ket{u}$} & \qwbundle[alternate]{} & &\gate{U^j} & & & \rstick{$\ket{u}$}
+\end{quantikz}
+\caption{第1段階+第2段階の量子回路の概略図}
+\label{fig:second}
+\end{figure}
+逆量子フーリエ変換を行い、第1レジスタの各量子ビットに対して測定を行うことで位相$\varphi$の2進数表示を得ることができる。
+\section{位相推定の精度}
+これまでの説明だと位相$\varphi$を誤差なく求めることできるように思えるが、これは\textbf{位相$\varphi$が$t$ビットで完全に表せるという理想的な場合に限られる}。一般の$\varphi$を推定しようとすると完全に推定することはできず、必ず誤差が生じてしまう。ここでは、この誤差を評価する。
 \end{document}
