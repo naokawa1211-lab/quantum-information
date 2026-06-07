@@ -32,13 +32,15 @@
 \begin{figure}[H]
     \centering
 \begin{quantikz}[thin lines]
-    \lstick{$\ket{0}$} & \gate{H} & & & &\cdots & \\
+    \lstick{$\ket{0}$} & \gate{H} & & & &\cdots & \ctrl{6}& \rstick{$\ket{0}+e^{2\pi i (2^{t-1}\varphi)}\ket{1}$}\\
     \vdots & \setwiretype{n} & & & & \vdots \\
-    \lstick{$\ket{0}$} & \gate{H} & & & \\
-    \lstick{$\ket{0}$} & \gate{H} &\\
-    \lstick{$\ket{0}$} & \gate{H} &\\
+    \lstick{$\ket{0}$} & \gate{H} & & & \ctrl{4}& \cdots & &\rstick{$\ket{0}+e^{2\pi i (2^2\varphi)}\ket{1}$}\\
+    \lstick{$\ket{0}$} & \gate{H} & & \ctrl{3} & &\cdots & & \rstick{$\ket{0}+e^{2\pi i (2^1\varphi)}\ket{1}$}\\
+    \lstick{$\ket{0}$} & \gate{H} & \ctrl{2}& & & \cdots & & \rstick{$\ket{0}+e^{2\pi i (2^0\varphi)}\ket{1}$}\\
     \setwiretype{n} & & & \\
-    \lstick{$\ket{u}$} & \qwbundle[alternate]{} & \gate{U^{2^0}}& \gate{U^{2^1}}& \gate{U^{2^2}}& \cdots & \gate{U^{2^{t-1}}}& & \\
+    \lstick{$\ket{u}$} & \qwbundle[alternate]{} & \gate{U^{2^0}}& \gate{U^{2^1}}& \gate{U^{2^2}}& \cdots & \gate{U^{2^{t-1}}}& \rstick{$\ket{u}$} \\
 \end{quantikz}
+\caption{量子位相推定の量子回路（規格化定数を省略）}
 \end{figure}
+
 \end{document}
